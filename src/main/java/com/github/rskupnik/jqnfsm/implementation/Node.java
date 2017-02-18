@@ -13,14 +13,17 @@ final class Node {
 
     private boolean exit = false;
 
-    Node(final Coordinator Coordinator, final int id, final FiniteStateMachine fsm) {
+    Node(final Coordinator Coordinator, final int id, final FiniteStateMachine fsm, boolean noThread) {
         this.Coordinator = Coordinator;
         this.id = id;
         this.fsm = fsm;
-        this.nodeThread = new Thread(new Worker());
 
-        nodeThread.setDaemon(true);
-        nodeThread.start();
+        if (!noThread) {
+            this.nodeThread = new Thread(new Worker());
+
+            nodeThread.setDaemon(true);
+            nodeThread.start();
+        } else nodeThread = null;
     }
 
     void sendMessage(Message msg, int nodeId) {
@@ -35,21 +38,22 @@ final class Node {
         exit = true;
     }
 
+    void tick() {
+        Message msg = null;
+        try {
+            msg = queue.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        fsm.update(msg);
+    }
+
     private class Worker implements Runnable {
 
         public void run() {
             while (!exit) {
-                Message msg = null;
-                try {
-                    msg = queue.take();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (msg == null)
-                    continue;
-
-                fsm.input(msg);
+                tick();
             }
         }
     }
