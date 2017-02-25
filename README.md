@@ -15,9 +15,7 @@ on the main thread, for example due to OpenGL context being bound to it.
 
 ## How to use it
 
-An example is provided on my github, named GDX-QnFSM.
-
-// TODO: Add a link here
+An example is provided on my github: [GDX-QnFSM](https://github.com/rskupnik/gdx-qnfsm)
 
 ## License
 
