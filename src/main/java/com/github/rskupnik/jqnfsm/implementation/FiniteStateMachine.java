@@ -1,9 +1,20 @@
 package com.github.rskupnik.jqnfsm.implementation;
 
+/**
+ * An abstract to use when implementing FiniteStateMachines to be ran on Nodes.
+ * FiniteStateMachines should be deterministic.
+ * FiniteStateMachines can receive Messages as input and change States.
+ */
 public abstract class FiniteStateMachine {
 
-    private State state;
+    private State state;    // The current state of the FSM
 
+    /**
+     * The "tick" method. If the msg is not null, it is parsed and then
+     * the current state's update() method is called
+     *
+     * @param msg a Message input
+     */
     protected void update(Message msg) {
         if (msg != null)
             parseInput(msg);
@@ -12,6 +23,9 @@ public abstract class FiniteStateMachine {
             state.update();
     }
 
+    /**
+     * Parses a Message input
+     */
     protected abstract void parseInput(Message msg);
 
     protected State getState() {
